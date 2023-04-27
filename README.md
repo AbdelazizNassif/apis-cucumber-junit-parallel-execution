@@ -1,7 +1,7 @@
 # Api Automation
 
 # Used tools
-- Java, rest assured, cucumber
+- Java, rest assured, cucumber, junit
 
 # Design patterns used:
 - Object model design pattern
