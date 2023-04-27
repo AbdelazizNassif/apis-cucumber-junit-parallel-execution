@@ -15,11 +15,10 @@
 - Open terminal in the project folder
 - Run command mvn clean, mvn test
 
-# done:
-- parallel execution of api tests on method level
-- cucumber runner class
-- cucumber parallel execution
-- Github actions
+# The following features are implemented:
+- Cucumber runner class using junit runner
+- Cucumber parallel execution on feature file level
+- Github actions and artifact the html report
 
 # In progress:
 - cucumber tags
