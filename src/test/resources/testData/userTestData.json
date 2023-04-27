@@ -1,0 +1,12 @@
+{
+    "username": "Jack Bean",
+    "email": "jack.%s@example.com",
+    "emailDomain": "@example.com",
+    "maleGender": "male",
+    "femaleGender": "female",
+    "activeStatus": "active",
+    "inactiveStatus": "inactive"
+    "newUsername": "Jack Bean",
+    "newEmail": "jack.%s@newDomain.com",
+    "newEmailDomain": "@newDomain.com"
+}
