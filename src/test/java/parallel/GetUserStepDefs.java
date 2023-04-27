@@ -21,11 +21,11 @@ import static filesReaders.ReadFromFiles.getPropertyByKey;
 
 public class GetUserStepDefs {
 
-    volatile ThreadLocal<String> userId = new ThreadLocal<>();
+    volatile String userId ;
     volatile String userDataJsonFile = "userTestData.json" ;
-    ThreadLocal<RequestSpecification> request = new ThreadLocal<>();
-    ThreadLocal<GetUserApi> getUserApi = new ThreadLocal<>();
-    ThreadLocal<Response> response = new ThreadLocal<>();
+   RequestSpecification request ;
+    GetUserApi getUserApi ;
+    Response response ;
 
     @Before
     public void beforeAnnotation ()
@@ -36,18 +36,18 @@ public class GetUserStepDefs {
     public void afterAnnotation ()
     {
         System.out.println("I am After Annotation");
-        request .remove();
-        getUserApi .remove();
-        response .remove();
+        request = null ;
+        getUserApi = null ;
+        response = null ;
     }
 
     @Given("I have valid authentication token for getting user")
     public void i_have_valid_authentication_token_for_getting_user() {
         // Write code here that turns the phrase above into concrete actions
-        request .set(  RestAssured.given()
-                .baseUri(getPropertyByKey("environment.properties", "APP_URL")) ) ;
+        request =RestAssured.given()
+                .baseUri(getPropertyByKey("environment.properties", "APP_URL")) ;
 
-        getUserApi .set(  new GetUserApi(request.get()) ) ;
+        getUserApi =new GetUserApi(request ) ;
     }
     @Given("New user is just created and had valid user id")
     public void new_user_is_just_created_and_had_valid_user_id() {
@@ -61,17 +61,17 @@ public class GetUserStepDefs {
         );
 
         JsonPath jp = response.jsonPath();
-        userId .set( jp.getString("id")  ) ;
+        userId =jp.getString("id") ;
     }
     @When("I try to get the newly created user")
     public void i_try_to_get_the_newly_created_user() {
         // Write code here that turns the phrase above into concrete actions
-        response .set(  getUserApi.get().getNewlyCreatedUser_validToken(userId.get()) );
+        response = getUserApi.getNewlyCreatedUser_validToken(userId );
     }
     @Then("I should see the same created user data")
     public void i_should_see_the_same_created_user_data() {
         // Write code here that turns the phrase above into concrete actions
-        response.get().then()
+        response.then()
                 .statusCode(200)
                 .header("Content-Type", Matchers.containsStringIgnoringCase("application/json;"))
                 .body("id", Matchers.notNullValue())
@@ -87,13 +87,13 @@ public class GetUserStepDefs {
     public void i_try_to_get_user_with_invalid_user_id() {
         // Write code here that turns the phrase above into concrete actions
         String invalidUserId = new Date().getTime() + "" ;
-        response .set( getUserApi.get().getNewlyCreatedUser_validToken(invalidUserId));
+        response = getUserApi.getNewlyCreatedUser_validToken(invalidUserId);
 
     }
     @Then("I should receive response that this user is not found")
     public void i_should_receive_response_that_this_user_is_not_found() {
         // Write code here that turns the phrase above into concrete actions
-        response.get().then()
+        response.then()
                 .statusCode(404)
                 .header("Content-Type", Matchers.containsStringIgnoringCase("application/json;"))
                 .body("message" , Matchers.equalTo("Resource not found"));
@@ -103,21 +103,21 @@ public class GetUserStepDefs {
     @Given("I did not add authentication token for getting user")
     public void i_did_not_add_authentication_token_for_getting_user() {
         // Write code here that turns the phrase above into concrete actions
-        request .set(  RestAssured.given()
-                .baseUri(getPropertyByKey("environment.properties", "APP_URL") )) ;
+        request =  RestAssured.given()
+                .baseUri(getPropertyByKey("environment.properties", "APP_URL") ) ;
 
-        getUserApi .set(  new GetUserApi(request.get()) );
+        getUserApi=  new GetUserApi(request) ;
     }
     @When("I try to get user with valid user id")
     public void i_try_to_get_user_with_valid_user_id() {
         // Write code here that turns the phrase above into concrete actions
-        response .set(getUserApi.get().getNewlyCreatedUser_missingTokenHeader(userId.get()) ) ;
+        response = getUserApi.getNewlyCreatedUser_missingTokenHeader(userId) ;
 
     }
     @Then("I should receive response that authentication is required")
     public void i_should_receive_response_that_authentication_is_required() {
         // Write code here that turns the phrase above into concrete actions
-        response.get().then()
+        response.then()
                 .statusCode(404)
                 .header("Content-Type", Matchers.containsStringIgnoringCase("application/json;"))
                 .body("message" , Matchers.equalTo("Resource not found"));
@@ -127,21 +127,21 @@ public class GetUserStepDefs {
     @Given("I have invalid authentication token for getting user")
     public void i_have_invalid_authentication_token_for_getting_user() {
         // Write code here that turns the phrase above into concrete actions
-        request .set(  RestAssured.given()
-                .baseUri(getPropertyByKey("environment.properties", "APP_URL")) ) ;
+        request= RestAssured.given()
+                .baseUri(getPropertyByKey("environment.properties", "APP_URL"))  ;
 
-        getUserApi .set( new GetUserApi(request.get()) ) ;
+        getUserApi = new GetUserApi(request ) ;
 
     }
     @When("I try to get user with unique email while having invalid token")
     public void i_try_to_get_user_with_unique_email_while_having_invalid_token() {
         // Write code here that turns the phrase above into concrete actions
-        response .set(  getUserApi.get().getNewlyCreatedUser_invalidTokenAndValidUserId(userId.get()));
+        response =  getUserApi.getNewlyCreatedUser_invalidTokenAndValidUserId(userId);
     }
     @Then("I should receive response that token is invalid")
     public void i_should_receive_response_that_token_is_invalid() {
         // Write code here that turns the phrase above into concrete actions
-        response.get().then()
+        response.then()
                 .statusLine(Matchers.equalTo("HTTP/1.1 401 Unauthorized"))
                 .statusCode(401)
                 .header("Content-Type", Matchers.containsStringIgnoringCase("application/json;"))
