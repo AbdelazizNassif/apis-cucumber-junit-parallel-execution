@@ -17,9 +17,8 @@
 
 # The following features are implemented:
 - Cucumber runner class using junit runner
-- Cucumber parallel execution on feature file level
-- Github actions and artifact the html report
+- Cucumber-junit parallel execution on feature file level
+- GitHub actions and artifact the html report
 - Running using cucumber tags
-
-# In progress:
+- cucumber-junit runner class
 
