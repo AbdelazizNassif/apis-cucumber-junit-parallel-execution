@@ -4,6 +4,7 @@ import apiObjects.users.DeleteUserApi;
 import apiObjects.users.PostUserApi;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -52,7 +53,7 @@ public class DeleteUserStepDefs {
         userId =  jp.getString("id")  ;
     }
 
-    @Given("I have valid authentication token for deleting existing user")
+    @And("I am a logged in system user, who have permission to delete existing user")
     public void i_have_valid_authentication_token_for_deleting_existing_user() {
         // Write code here that turns the phrase above into concrete actions
         request = RestAssured.given()
@@ -77,7 +78,7 @@ public class DeleteUserStepDefs {
         Assert.assertEquals( "Response should be empty", "", response.asString());
     }
 
-    @Given("I did not add authentication token for deleting existing user")
+    @And("I am not logged in for deleting existing user")
     public void i_did_not_add_authentication_token_for_deleting_existing_user() {
         // Write code here that turns the phrase above into concrete actions
         request = RestAssured.given()
@@ -86,19 +87,22 @@ public class DeleteUserStepDefs {
         deleteUserApi =new DeleteUserApi(request ) ;
     }
 
-    @When("I delete existing while being unauthenticated")
+    @When("I delete existing while being non-authorized to delete")
     public void i_delete_existing_while_being_unauthenticated() {
         // Write code here that turns the phrase above into concrete actions
         response = deleteUserApi.deleteUser_missingAuth(userId ) ;
     }
 
-    @Then("I should receive response that authentication is required for deleting users")
-    public void i_should_receive_response_that_authentication_is_required_for_deleting_users() {
+    @Then("I should receive response that {string} as protection for our users")
+    public void i_should_receive_response_that_authentication_is_required_for_deleting_users(String errMessage) {
         // Write code here that turns the phrase above into concrete actions
         response.then()
                 .statusCode(404)
                 .header("Content-Type", Matchers.containsStringIgnoringCase("application/json;"))
-                .body("message" , Matchers.equalTo("Resource not found"));
+                .body("message" , Matchers.equalTo(errMessage));
     }
+
+
+
 
 }

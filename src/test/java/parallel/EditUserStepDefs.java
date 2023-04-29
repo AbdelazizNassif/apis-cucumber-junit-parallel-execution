@@ -39,7 +39,7 @@ public class EditUserStepDefs {
         response = null ;
     }
 
-    @Given("I have valid authentication token for editing user")
+    @Given("I am a logged in system user and have permission for editing user")
     public void i_have_valid_authentication_token_for_editing_user() {
         // Write code here that turns the phrase above into concrete actions
         request = RestAssured.given()
@@ -75,54 +75,41 @@ public class EditUserStepDefs {
                 .body("email", Matchers.containsStringIgnoringCase(getJsonStringValueByKey(userDataJsonFile , "newEmailDomain")))
                 .body("status" , Matchers.equalToIgnoringCase(getJsonStringValueByKey(userDataJsonFile , "inactiveStatus")));    }
 
-    @Given("I did not add authentication token for editing existing user")
+    @Given("I am non-logged in system user who tries to edit existing user")
     public void i_did_not_add_authentication_token_for_editing_existing_user() {
         // Write code here that turns the phrase above into concrete actions
         request = RestAssured.given()
                 .baseUri(getPropertyByKey("environment.properties", "APP_URL"));
-
         editUserApi = new EditUserApi(request)  ;
-
     }
-    @When("I update existing user with another unique email while being unauthenticated")
+    @When("I update existing user with another unique email while being non-logged in")
     public void iUpdateExistingUserWithAnotherUniqueEmailWhileBeingUnauthenticated() {
         response = editUserApi.editUser_missingAuth(userId)  ;
-
     }
-    @Then("I should receive response that authentication is required for editing users")
-    public void i_should_receive_response_that_authentication_is_required_for_editing_users() {
+    @Then("Existing user is not updated with {string} with {int} is shown to non-logged in user as protection for our users")
+    public void i_should_receive_response_that_authentication_is_required_for_editing_users(String errMsg, int errCode) {
         // Write code here that turns the phrase above into concrete actions
         response.then()
-                .statusCode(404)
+                .statusCode(errCode)
                 .header("Content-Type", Matchers.containsStringIgnoringCase("application/json;"))
-                .body("message" , Matchers.equalTo("Resource not found"));    }
+                .body("message" , Matchers.equalTo(errMsg));
+    }
 
-    @Given("I have invalid authentication token for editing existing user")
+    @Given("I have expired login session who tries to edit existing user")
     public void i_have_invalid_authentication_token_for_editing_existing_user() {
         // Write code here that turns the phrase above into concrete actions
         request =RestAssured.given()
                 .baseUri(getPropertyByKey("environment.properties", "APP_URL"))  ;
 
         editUserApi = new EditUserApi(request) ;
-
     }
 
-    @When("I update existing user with unique email while having invalid token")
+    @When("I update existing user with unique email while having expired session")
     public void i_update_existing_user_with_unique_email_while_having_invalid_token() {
         // Write code here that turns the phrase above into concrete actions
         response =  editUserApi.editUser_invalidToken(userId ) ;
 
     }
-
-    @Then("I should receive response that token is invalid for editing existing users")
-    public void i_should_receive_response_that_token_is_invalid_for_editing_existing_users() {
-        // Write code here that turns the phrase above into concrete actions
-        response.then()
-                .statusCode(401)
-                .header("Content-Type", Matchers.containsStringIgnoringCase("application/json;"))
-                .body("message" , Matchers.equalTo("Invalid token")) ;
-    }
-
 
 
 }

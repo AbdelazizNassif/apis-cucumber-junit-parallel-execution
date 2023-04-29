@@ -20,7 +20,7 @@ public class CreateUserTests {
     User user;
 
     @Test
-    public void t ()
+    public void testCreateUserUsingSerializationAndDeserializeation ()
     {
         request  =  RestAssured.given()
                 .baseUri(getPropertyByKey("environment.properties", "APP_URL"))  ;
@@ -30,7 +30,7 @@ public class CreateUserTests {
 
         assertThat(user.getId(), notNullValue());
         assertThat(user.getName() , equalTo(getJsonStringValueByKey(userDataJsonFile , "username")));
-        assertThat(user.getEmail(), containsStringIgnoringCase(getJsonStringValueByKey(userDataJsonFile , "emailDomain")));
+        assertThat(user.getEmailVar(), containsStringIgnoringCase(getJsonStringValueByKey(userDataJsonFile , "emailDomain")));
         assertThat(user.getGender() , equalTo(getJsonStringValueByKey(userDataJsonFile , "maleGender")));
         assertThat(user.getStatus() , equalToIgnoringCase(getJsonStringValueByKey(userDataJsonFile, "activeStatus")));
     }

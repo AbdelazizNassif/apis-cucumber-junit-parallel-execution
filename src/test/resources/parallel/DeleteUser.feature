@@ -1,17 +1,17 @@
 @delete-user
-Feature: Delete USER/  Authenticated user should be able to delete existing user
+Feature: Delete Existing User/  Our system user should be able to delete existing user
 
-#  Background: A new user is added to be deleted as pre-condition for each scenario
+  Background: A new user is created as precondition for all scenarios
+    Given a new user is just created to be deleted
 
   @regression @users @smoke @automated
-  Scenario: As authenticated user, I should be able to delete existing user
-    Given a new user is just created to be deleted
-    And I have valid authentication token for deleting existing user
+  Scenario: As logged in system user, I should be able to delete existing user
+    And I am a logged in system user, who have permission to delete existing user
     When I delete existing user
     Then The user should be removed from the system
+
   @users @automated
-  Scenario: As non-authenticated user, I should not be able to delete existing user
-    Given a new user is just created to be deleted
-    And I did not add authentication token for deleting existing user
-    When I delete existing while being unauthenticated
-    Then I should receive response that authentication is required for deleting users
+  Scenario: As non-logged in system user, I should not be able to delete existing user
+    And I am not logged in for deleting existing user
+    When I delete existing while being non-authorized to delete
+    Then I should receive response that "Resource not found" as protection for our users

@@ -41,7 +41,7 @@ public class PostUserApi {
     {
         String userDataJsonFile = "userTestData.json" ;
 
-        User newUserBody = new User(
+        User newUser = new User(
                 getJsonStringValueByKey(userDataJsonFile , "username"),
                 getJsonStringValueByKey(userDataJsonFile , "maleGender"),
                 email,
@@ -50,7 +50,7 @@ public class PostUserApi {
         return postUserApiDriver
                 .contentType(ContentType.JSON)
                 .header("Authorization" , "Bearer " + getPropertyByKey("environment.properties", "ACCESS_TOKEN"))
-                .body(newUserBody).log().all()
+                .body(newUser).log().all()
                 .when()
                 .post(postUserApiEndpoint).as(User.class);
     }

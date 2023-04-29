@@ -12,7 +12,7 @@ public class User {
     @JsonProperty("gender")
     private String gender;
     @JsonProperty("email")
-    private String email;
+    private String emailVar;
     @JsonProperty("status")
     private String status;
 
@@ -22,14 +22,14 @@ public class User {
     public User( String name, String gender, String email, String status) {
         setName(name);
         setGender(gender);
-        setEmail(email);
+        setEmailVar(email);
         setStatus(status);
     }
     public User(int id, String gender, String name, String email, String status) {
         setId(id);
         setName(name);
         setGender(gender);
-        setEmail(email);
+        setEmailVar(email);
         setStatus(status);
     }
 
@@ -49,12 +49,12 @@ public class User {
         this.name = name;
     }
 
-    public String getEmail() {
-        return email;
+    public String getEmailVar() {
+        return emailVar;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEmailVar(String emailVar) {
+        this.emailVar = emailVar;
     }
 
     public String getGender() {
