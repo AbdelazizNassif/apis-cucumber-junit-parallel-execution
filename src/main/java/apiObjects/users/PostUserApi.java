@@ -4,6 +4,7 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.json.simple.JSONObject;
+import models.User;
 
 
 import static filesReaders.ReadFromFiles.getJsonStringValueByKey;
@@ -18,39 +19,40 @@ public class PostUserApi {
         this.postUserApiDriver = postUserApiDriver;
     }
 
-//    public Response createNewUser_validTokenAndValidEmail ()
-//    {
-//        String userDataJsonFile = "userTestData.json" ;
-//        System.out.println("**" + getJsonStringValueByKey(userDataJsonFile , "username"));
-//        JSONObject userJsonBody = new JSONObject();
-//        userJsonBody.put("name" , getJsonStringValueByKey(userDataJsonFile , "username"));
-//        userJsonBody.put("gender" , getJsonStringValueByKey(userDataJsonFile , "maleGender"));
-//        userJsonBody.put("email" , String.format(getJsonStringValueByKey(userDataJsonFile, "email"), System.currentTimeMillis()) );
-//        userJsonBody.put("status" , getJsonStringValueByKey(userDataJsonFile, "activeStatus"));
-//
-//        return postUserApiDriver
-//                .contentType(ContentType.JSON)
-//                .header("Authorization" , "Bearer " + getPropertyByKey("environment.properties", "ACCESS_TOKEN"))
-//                .body(userJsonBody).log().all()
-//                .when()
-//                .post(postUserApiEndpoint);
-//    }
     public Response createNewUser_validTokenAndValidEmail (String email)
     {
         String userDataJsonFile = "userTestData.json" ;
-        System.out.println("**" + getJsonStringValueByKey(userDataJsonFile , "username"));
-        JSONObject userJsonBody = new JSONObject();
-        userJsonBody.put("name" , getJsonStringValueByKey(userDataJsonFile , "username"));
-        userJsonBody.put("gender" , getJsonStringValueByKey(userDataJsonFile , "maleGender"));
-        userJsonBody.put("email" , email );
-        userJsonBody.put("status" , getJsonStringValueByKey(userDataJsonFile, "activeStatus"));
+
+        User newUserBody = new User(
+                getJsonStringValueByKey(userDataJsonFile , "username"),
+                getJsonStringValueByKey(userDataJsonFile , "maleGender"),
+                email,
+                getJsonStringValueByKey(userDataJsonFile, "activeStatus"));
 
         return postUserApiDriver
                 .contentType(ContentType.JSON)
                 .header("Authorization" , "Bearer " + getPropertyByKey("environment.properties", "ACCESS_TOKEN"))
-                .body(userJsonBody).log().all()
+                .body(newUserBody).log().all()
                 .when()
                 .post(postUserApiEndpoint);
+    }
+
+    public User createNewUser_serilaizedBody_validTokenAndValidEmail (String email)
+    {
+        String userDataJsonFile = "userTestData.json" ;
+
+        User newUserBody = new User(
+                getJsonStringValueByKey(userDataJsonFile , "username"),
+                getJsonStringValueByKey(userDataJsonFile , "maleGender"),
+                email,
+                getJsonStringValueByKey(userDataJsonFile, "activeStatus"));
+
+        return postUserApiDriver
+                .contentType(ContentType.JSON)
+                .header("Authorization" , "Bearer " + getPropertyByKey("environment.properties", "ACCESS_TOKEN"))
+                .body(newUserBody).log().all()
+                .when()
+                .post(postUserApiEndpoint).as(User.class);
     }
     public Response createNewUser_missingAuthenticationAndValidEmail()
     {

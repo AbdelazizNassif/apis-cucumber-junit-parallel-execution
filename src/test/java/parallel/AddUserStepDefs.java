@@ -6,10 +6,10 @@ import io.cucumber.java.en.*;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import models.User;
 import org.hamcrest.Matchers;
+import org.junit.Assert;
 import utils.Utils;
-
-import java.rmi.server.UnicastRemoteObject;
 
 import static filesReaders.ReadFromFiles.getJsonStringValueByKey;
 import static filesReaders.ReadFromFiles.getPropertyByKey;
@@ -50,12 +50,13 @@ public class AddUserStepDefs {
         // Write code here that turns the phrase above into concrete actions
         System.out.println("i_add_new_user_with_unique_email");
         response =  postUserApiTests.createNewUser_validTokenAndValidEmail(
-                String.format(getJsonStringValueByKey(userDataJsonFile, "email"), Utils.generateRandomString(7)));
+                String.format(getJsonStringValueByKey(userDataJsonFile, "email"), Utils.generateRandomString(7)) );
     }
     @Then("A new user is added to the system")
     public void a_new_user_is_added_to_the_system() {
         // Write code here that turns the phrase above into concrete actions
         System.out.println("a_new_user_is_added_to_the_system");
+
         response.then().log().all()
                 .statusCode(201)
                 .header("Content-Type", Matchers.containsStringIgnoringCase("application/json;"))
