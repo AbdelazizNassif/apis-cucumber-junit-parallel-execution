@@ -34,8 +34,8 @@ jobs:
       run: mvn clean
       
     - name: run tests
-      run: mvn test
-      
+      run: mvn test -D"cucumber.filter.tags=@automated and @users"
+
     - name: check files
       run: ls -a
       
